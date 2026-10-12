@@ -202,4 +202,36 @@
       if (g && g.getBoundingClientRect().top < 0) g.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
+
+  /* ---------- case study cards: click to view details ---------- */
+  (function () {
+    var cards = document.querySelectorAll('.cs');
+    function setCard(card, open) {
+      var btn = card.querySelector('.cs-toggle');
+      if (!btn) return;
+      card.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var t = btn.querySelector('.cs-toggle-t');
+      if (t) t.textContent = open ? 'Hide details' : 'Click to view details';
+    }
+    cards.forEach(function (card) {
+      var btn = card.querySelector('.cs-toggle');
+      if (btn) btn.addEventListener('click', function () { setCard(card, btn.getAttribute('aria-expanded') !== 'true'); });
+    });
+    /* Open a card when a link (e.g. "View Sample Work") jumps straight to it */
+    function openFromHash() {
+      var id = (location.hash || '').replace('#', '');
+      var card = id && document.getElementById(id);
+      if (card && card.classList.contains('cs')) setCard(card, true);
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href*="#case-0"]');
+      if (!a) return;
+      var id = a.getAttribute('href').split('#')[1];
+      var card = id && document.getElementById(id);
+      if (card && card.classList.contains('cs')) setCard(card, true);
+    });
+    window.addEventListener('hashchange', openFromHash);
+    openFromHash();
+  })();
 })();
