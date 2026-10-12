@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jewelramos.github.io/va-portfolio/sitemap.xml
