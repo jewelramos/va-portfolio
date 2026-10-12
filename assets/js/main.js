@@ -13,13 +13,42 @@
     document.body.classList.toggle('lock', open);
     if (open) menu.scrollTop = 0;
   }
+  /* Scroll to an in-page section after the drawer has closed. The drawer is closed first (and the
+     body scroll-lock released) because iOS Safari ignores scrolling while body overflow is hidden. */
+  function goTo(id, href) {
+    var target = document.getElementById(id);
+    if (!target) return;
+    var offset = parseInt(getComputedStyle(document.documentElement).scrollPaddingTop, 10) || 92;
+    var y = id === 'home' ? 0 : Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - offset);
+    window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+    try { if (history.replaceState) history.replaceState(null, '', href); } catch (err) { /* file:// or sandboxed */ }
+  }
   if (burger && menu) {
     burger.addEventListener('click', function () { setMenu(!menu.classList.contains('open')); });
-    menu.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    /* One delegated handler covers every drawer link (and any child element inside it): same-page
+       anchors close the drawer, release the scroll lock, then scroll smoothly; links to other pages
+       just close it and navigate normally. */
+    menu.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a || !menu.contains(a)) return;
+      var href = a.getAttribute('href') || '';
+      var id = href.charAt(0) === '#' ? href.slice(1) : '';
+      var wasOpen = menu.classList.contains('open');
+      if (id && document.getElementById(id)) {
+        e.preventDefault();
+        setMenu(false);
+        if (wasOpen) { setTimeout(function () { goTo(id, href); }, 60); } else { goTo(id, href); }
+      } else {
+        setMenu(false);
+      }
+    });
+    window.addEventListener('orientationchange', function () { setMenu(false); });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && menu.classList.contains('open')) { setMenu(false); burger.focus(); }
     });
-    window.matchMedia('(min-width: 1101px)').addEventListener('change', function (e) { if (e.matches) setMenu(false); });
+    var wide = window.matchMedia('(min-width: 1101px)');
+    var onWide = function (e) { if (e.matches) setMenu(false); };
+    if (wide.addEventListener) { wide.addEventListener('change', onWide); } else if (wide.addListener) { wide.addListener(onWide); }
   }
 
   /* ---------- active section highlight ---------- */

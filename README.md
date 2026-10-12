@@ -6,7 +6,7 @@ Static site (HTML, CSS, vanilla JS). No build step. Dark slate theme, indigo acc
 - `index.html` — homepage with all 12 sections
 - `projects/lead-contact-tracking.html`, `projects/trello-content-workflow.html` — case studies
 - `404.html`, `thanks.html` (form confirmation), `robots.txt`, `sitemap.xml`, `.nojekyll`
-- `assets/css/style.css`, `assets/js/main.js`
+- `assets/css/style.css`, `assets/js/main.js` (gallery, counters), `assets/js/contact.js` (service pills, inquiry form, copy email, live PHT clock), `assets/js/footer.js` (Back to Top)
 - `assets/images/profile/jewel-ramos.jpg` (profile photo), `assets/images/certificates/` (6 real certificates), `assets/images/case-studies/` (2 real screenshots)
 
 ## Preview
@@ -22,7 +22,7 @@ Notes:
 - `.nojekyll` is included so GitHub serves the files as-is. Keep it.
 - File names are case-sensitive on GitHub. Keep the images' names exactly as they are.
 - For a root address like `https://YOUR-USERNAME.github.io/`, name the repo `YOUR-USERNAME.github.io`.
-- The Contact section has no form; visitors reach you by the email and LinkedIn links.
+- The Contact section has an inquiry form (see "Inquiry form setup" below).
 
 ## After your site is live
 Replace `https://YOUR-USERNAME.github.io/YOUR-REPO` with your real address in every HTML file (canonical and og:url tags), `robots.txt` and `sitemap.xml`. For a custom domain, use that domain instead, and add it under Settings > Pages.
@@ -53,3 +53,10 @@ Copy a file in `projects/`, edit its text and images, add a link from the homepa
 - Images: `assets/images/pubmats/pubmat-NN.webp` (full, max 1600px) and `pubmat-NN-thumb.webp` (grid thumbnail).
 - To edit a title, org label, or Facebook link, change the `data-title`, `data-org`, `data-fb` attributes (and the visible `.gorg` / `.gt` text) on the matching `.gthumb` button.
 - To add a pubmat, copy one `<li>` in `.ggrid`, add its two image files, and update the attributes. Next/Previous, the counter, and keyboard/swipe navigation pick it up automatically.
+
+## Inquiry form setup
+GitHub Pages cannot run server code, so the form works in one of two ways:
+- **Default (no setup):** "Send Inquiry" opens the visitor's email app with their email, chosen services and message already filled in, addressed to `jewelramos.va@gmail.com`.
+- **Direct delivery (recommended):** create a free form endpoint (for example at formspree.io, which emails submissions to you), then paste its URL into the form in `index.html`: `<form class="qf" id="inquiry" data-endpoint="https://formspree.io/f/YOUR-ID" ...>`. Visitors then stay on the page and see the "Inquiry Sent" state.
+
+The service pills in `index.html` (class `pill`) can be renamed, added or removed freely.
